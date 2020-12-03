@@ -64,15 +64,16 @@ def begin_with_terminal(v, p_0):
     p = copy.deepcopy(p_0)
     for a_r in v:
         for a_s in v:
-            if v.index(a_s) == v.index(a_r) + 1:
-                rhs_list = p[a_r]
-                for rhs in rhs_list:
-                    if rhs[0] == a_s:
-                        for beta in p[a_s]:
-                            beta_copy = beta.copy()
-                            beta_copy.extend(rhs[1:]) # beta alpha
-                            p[a_r].append(beta_copy)
-                        p[a_r].remove(rhs)
+            for i in range (len(v)):
+                if v.index(a_s) == v.index(a_r) + i:
+                    rhs_list = p[a_r]
+                    for rhs in rhs_list:
+                        if rhs[0] == a_s:
+                            for beta in p[a_s]:
+                                beta_copy = beta.copy()
+                                beta_copy.extend(rhs[1:]) # beta alpha
+                                p[a_r].append(beta_copy)
+                            p[a_r].remove(rhs)
     return p
 
 def terminal_followed_by_word_of_variables(p):
