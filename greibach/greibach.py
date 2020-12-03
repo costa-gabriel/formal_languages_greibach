@@ -60,8 +60,20 @@ def left_recursion_elimination(v, p_0):
             p[a_r].append(rhs_copy)
     return p
 
-def begin_with_terminal(p):
-    pass
+def begin_with_terminal(v, p_0):
+    p = copy.deepcopy(p_0)
+    for a_r in v:
+        for a_s in v:
+            if v.index(a_s) == v.index(a_r) + 1:
+                rhs_list = p[a_r]
+                for rhs in rhs_list:
+                    if rhs[0] == a_s:
+                        for beta in p[a_s]:
+                            beta_copy = beta.copy()
+                            beta_copy.extend(rhs[1:]) # beta alpha
+                            p[a_r].append(beta_copy)
+                        p[a_r].remove(rhs)
+    return p
 
 def terminal_followed_by_word_of_variables(p):
     pass
@@ -97,8 +109,8 @@ def mk_example(ex_num, v_0, p_0):
         p_i = left_recursion_elimination(v, p_i)
         print_prod(p_i)
         print(colored("Each production begining with a terminal.", 'grey'))
-        p_i = begin_with_terminal(p_i)
-        pp.pprint("TO DO!")    
+        p_i = begin_with_terminal(v, p_i)
+        print_prod(p_i)    
         print(colored("Each production begining with a terminal followed by a word of variables.", 'grey'))
         p_i = terminal_followed_by_word_of_variables(p_i)
         pp.pprint("TO DO!")
