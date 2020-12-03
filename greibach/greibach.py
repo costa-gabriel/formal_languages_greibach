@@ -65,7 +65,7 @@ def begin_with_terminal(v, p_0):
     for a_r in v:
         for a_s in v:
             for i in range (len(v)):
-                if v.index(a_s) == v.index(a_r) + i:
+                if v.index(a_s) == v.index(a_r) + i or v.index(a_s) < v.index(a_r):
                     rhs_list = p[a_r]
                     for rhs in rhs_list:
                         if rhs[0] == a_s:
