@@ -15,6 +15,12 @@ from termcolor import colored
 import copy
 import itertools
 
+def search(list, item):
+    for i in range(len(list)):
+        if list[i] == item:
+            return True
+    return False
+
 def sort_variables(v):
     v_set = set(v)
     v_list = list(v_set)
@@ -44,7 +50,7 @@ def left_recursion_elimination(v, p_0):
             if rhs[0] == a_r:
                 rhs_copy = rhs.copy()
                 b_r = rhs_copy[0] + "_rr"
-                v = v.append(b_r)
+                v.append(b_r)
                 alpha = rhs_copy[1:]
                 alpha_x = alpha.copy()
                 alpha_x.append(b_r)
@@ -76,8 +82,27 @@ def begin_with_terminal(v, p_0):
                             p[a_r].remove(rhs)
     return p
 
-def terminal_followed_by_word_of_variables(p):
-    pass
+def terminal_followed_by_word_of_variables(v, p_0, t_0):
+    p = copy.deepcopy(p_0)
+    t_subs = []
+    new_p = {}
+    for a_r in v:
+        for rhs_list in enumerate(p[a_r]):
+            rhs = rhs_list[1]
+            for i in range(1, len(rhs), 1):
+                for t in t_0:
+                    if rhs[i] == t:
+                        rhs[i] = t.upper() + "_tt"
+                        if not search(t_subs, t):
+                            t_subs.append(t)
+    for t in t_subs:
+        b_r = t.upper() + "_tt"
+        alpha = t
+        v.append(b_r)
+        new_p.update({ b_r : [alpha] })
+    
+    p.update(new_p)
+    return p
 
 def print_prod(p):
     for key in p.keys():
@@ -113,8 +138,9 @@ def mk_example(ex_num, v_0, p_0):
         p_i = begin_with_terminal(v, p_i)
         print_prod(p_i)    
         print(colored("Each production begining with a terminal followed by a word of variables.", 'grey'))
-        p_i = terminal_followed_by_word_of_variables(p_i)
-        pp.pprint("TO DO!")
+        p_i = terminal_followed_by_word_of_variables(v, p_i, t)
+        print_prod(p_i) 
+        print("\n")
     
 if __name__ == "__main__":
     print(colored("Examples of transformations from CFG to Greibach normal form", attrs=['bold']))
@@ -122,7 +148,7 @@ if __name__ == "__main__":
     ### Example 1
     v_0 = ["A", "S"]
     t = ["a", "b"]
-    p_0 = { "S" : [["A", "A"], ["a"]], "A" : [["S", "S"], ["b"]] }
+    p_0 = { "S" : [["A", "A", "a"], ["a"]], "A" : [["S", "S"], ["b"]] }
     s  = "S"
     mk_example(1, v_0, p_0)
 
